@@ -1,8 +1,6 @@
 package com.example.studyapp.authentication
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,27 +15,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studyapp.R
-import com.example.studyapp.ui.theme.StudyAppTheme
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.studyapp.Data.UserRepository
+import com.example.studyapp.Data.database.User
+import com.example.studyapp.Data.database.UserDAO
+import com.example.studyapp.viewmodel.LoginViewModel
+import com.example.studyapp.viewmodel.SignUpViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
-class LoginActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            StudyAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(modifier = Modifier.padding(innerPadding))
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun LoginHeading() {
@@ -108,11 +101,12 @@ fun SignupRedirect(onClick: () -> Unit) {
     )
 }
 
-@Preview
+
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -125,7 +119,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 painter = painterResource(id = R.drawable.background),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop // Make background cover entire screen
+                contentScale = ContentScale.Crop
             )
             Column(
                 modifier = Modifier
@@ -136,9 +130,68 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 LoginHeading()
                 UsernameField(username = username, onUsernameChange = { username = it })
                 PasswordField(password = password, onPasswordChange = { password = it })
-                LoginButton(onClick = { /* Handle login */ })
+                LoginButton(onClick = {
+                    if (username.isNotBlank() && password.isNotBlank()) {
+                        viewModel.login(username, password,
+                            onLoginSuccess = {
+
+                                Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                            },
+                            onFailure = {
+
+                                Toast.makeText(context, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    } else {
+                        Toast.makeText(context, "Please enter both username and password", Toast.LENGTH_SHORT).show()
+                    }
+                })
                 SignupRedirect(onClick = { /* Redirect to signup screen */ })
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    // Simulating a mock viewModel and flexible login flow
+    val mockUserDAO = object : UserDAO {
+        override suspend fun insert(user: User) {
+            // Simulate insert logic
+        }
+
+        override suspend fun update(user: User) {
+            // Simulate update logic
+        }
+
+        override suspend fun delete(user: User) {
+            // Simulate delete logic
+        }
+
+        override fun getUser(username: String, password: String): Flow<User> {
+            return flowOf(User(username = username, password = password))
+        }
+
+    }
+    val mockUserRepository = UserRepository(mockUserDAO)
+
+
+    val mockViewModel = object : LoginViewModel(mockUserRepository) {
+        override fun login(username: String, password: String, onLoginSuccess: () -> Unit, onFailure: () -> Unit) {
+            // Dynamic validation based on username/password
+            if (username == "testUser" && password == "testPass") {
+                onLoginSuccess() // Simulate successful login
+            } else {
+                onFailure() // Simulate failure for other cases
+            }
+
+        }
+    }
+
+    // You can preview with different values to simulate different login scenarios
+    LoginScreen(
+        modifier = Modifier.fillMaxSize(),
+        viewModel = mockViewModel
+    )
 }

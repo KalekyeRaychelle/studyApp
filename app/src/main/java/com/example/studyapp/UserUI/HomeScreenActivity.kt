@@ -1,4 +1,5 @@
-package com.example.studyapp
+package com.example.studyapp.UserUI
+
 import com.example.studyapp.authentication.LoginScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,7 +22,7 @@ import com.example.studyapp.ui.theme.StudyAppTheme
 
 
 
-class MainActivity : ComponentActivity() {
+class HomeScreenActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

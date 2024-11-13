@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.studyapp.R
 import com.example.studyapp.authentication.LoginScreen
-import com.example.studyapp.authentication.SignupScreen
+
 import com.example.studyapp.ui.theme.StudyAppTheme
 
 class footer : ComponentActivity() {
@@ -30,8 +30,8 @@ class footer : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StudyAppTheme {
-                LoginScreen()
-                SignupScreen()
+
+
             }
         }
     }
