@@ -8,8 +8,6 @@ data class Course (
     @PrimaryKey(autoGenerate = true)
     val courseID: Int,
     val courseName: String,
-    val noOfUnits:Int,
+    val noOfTopics:Int,
     val maximumXp:Int
-){
-
-}
+){}

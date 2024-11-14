@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 fun UserInfoSection() {
     Box(
         modifier = Modifier
-            .background(color = Color(0xFFD1495B))
+            .background(color=Color(0xFF7D956D))
             .padding(16.dp)
     ) {
         Row {

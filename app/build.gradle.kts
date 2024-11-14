@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
 
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")

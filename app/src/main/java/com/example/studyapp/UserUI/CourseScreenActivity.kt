@@ -1,6 +1,7 @@
 package com.example.studyapp.UserUI
 
-import HomeScreen
+
+
 import com.example.studyapp.authentication.LoginScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,18 +20,19 @@ import com.example.studyapp.Data.UserRepository
 import com.example.studyapp.Data.database.studyAppdatabase
 
 import com.example.studyapp.ui.theme.StudyAppTheme
+import com.example.studyapp.viewModel.CourseViewModel
 
 
-
-
-class HomeScreenActivity : ComponentActivity() {
-
+class CourseScreenActivity : ComponentActivity() {
+    private val courseViewModel: CourseViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             StudyAppTheme {
-                HomeScreen()
+                Scaffold { paddingValues ->
+                    CourseScreen(courseViewModel, Modifier.padding(paddingValues))
+                }
             }
         }
     }
