@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.studyapp.R
 import com.example.studyapp.authentication.LoginScreen
 
@@ -38,9 +40,8 @@ class footer : ComponentActivity() {
 }
 
 
-
 @Composable
-fun Footer() {
+fun Footer(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,29 +53,32 @@ fun Footer() {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { /* Handle home click */ }) {
+            // Navigate to Home Screen
+            IconButton(onClick = { navController.navigate("home_screen") }) {
                 Icon(
                     painter = painterResource(id = R.drawable.home),
                     contentDescription = "Home"
-
                 )
             }
 
-            IconButton(onClick = { /* Handle current courses click */ }) {
+            // Navigate to Current Courses Screen
+            IconButton(onClick = { navController.navigate("course_screen") }) {
                 Icon(
                     painter = painterResource(id = R.drawable.course),
                     contentDescription = "Current Courses"
                 )
             }
 
-            IconButton(onClick = { /* Handle discussions click */ }) {
+            // Navigate to Current Discussions Screen (You can implement a screen for this)
+            IconButton(onClick = { navController.navigate("discussions_screen") }) {
                 Icon(
                     painter = painterResource(id = R.drawable.meeting),
                     contentDescription = "Current Discussions"
                 )
             }
 
-            IconButton(onClick = { /* Handle profile click */ }) {
+            // Navigate to User Profile Screen (You can implement a profile screen)
+            IconButton(onClick = { navController.navigate("profile_screen") }) {
                 Icon(
                     painter = painterResource(id = R.drawable.user),
                     contentDescription = "User Profile"
@@ -85,12 +89,14 @@ fun Footer() {
 }
 
 
+
 @Preview(showBackground = true)
 @Composable
 fun FooterPreview() {
     MaterialTheme {
         Surface {
-            Footer()
+            val navController = rememberNavController()
+            Footer(navController = navController)
         }
     }
 }

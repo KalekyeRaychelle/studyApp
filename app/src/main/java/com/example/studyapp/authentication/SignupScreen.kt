@@ -23,17 +23,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.studyapp.Data.UserRepository
 import com.example.studyapp.Data.database.User
 import com.example.studyapp.Data.database.UserDAO
 import com.example.studyapp.R
-import com.example.studyapp.viewmodel.SignUpViewModel
+import com.example.studyapp.viewModel.SignUpViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier, viewModel: SignUpViewModel) {
+fun SignupScreen(modifier: Modifier = Modifier, viewModel: SignUpViewModel, navController: NavHostController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -81,11 +85,28 @@ fun SignupScreen(modifier: Modifier = Modifier, viewModel: SignUpViewModel) {
                         ).show()
                     }
                 })
-                LoginRedirect(onClick = { /* Redirect to login screen */ })
+                LoginRedirect(navController = navController)
             }
         }
     }
 }
+
+@Composable
+fun LoginRedirect(navController: NavHostController) {
+    Text(
+        text = "Already have an account? Log In",
+        color = Color(0xFF6200EE),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+            .clickable {
+                navController.navigate("login_screen") // Navigate to login screen
+            },
+        fontSize = 20.sp,
+        textAlign = TextAlign.Center
+    )
+}
+
 
 @Composable
 fun SignupHeading() {
@@ -141,19 +162,6 @@ fun SignupButton(onClick: () -> Unit) {
     }
 }
 
-@Composable
-fun LoginRedirect(onClick: () -> Unit) {
-    Text(
-        text = "Already have an account? Log In",
-        color = Color(0xFF6200EE),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-            .clickable(onClick = onClick),
-        fontSize = 20.sp,
-        textAlign = TextAlign.Center
-    )
-}
 
 @Preview(showBackground = true)
 @Composable
@@ -184,6 +192,14 @@ fun PreviewSignupScreen() {
     // Create a mock SignUpViewModel
     val mockViewModel = SignUpViewModel(mockUserRepository)
 
-    // Pass the mockViewModel to the SignupScreen composable
-    SignupScreen(viewModel = mockViewModel)
+    val navController = rememberNavController()
+
+    // Set up the navigation with the NavHost
+    NavHost(navController = navController, startDestination = "signup_screen") {
+        composable("signup_screen") {
+            // Pass navController to the SignupScreen
+            SignupScreen(viewModel = mockViewModel, navController = navController)
+        }
+        // Add other composable destinations here if needed (e.g., login_screen)
+    }
 }

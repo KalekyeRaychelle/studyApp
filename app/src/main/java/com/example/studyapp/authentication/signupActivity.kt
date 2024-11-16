@@ -11,7 +11,7 @@ import com.example.studyapp.ui.theme.StudyAppTheme
 import com.example.studyapp.Data.UserRepository
 import com.example.studyapp.Data.database.studyAppdatabase
 import com.example.studyapp.viewModel.SignUpViewModelFactory
-import com.example.studyapp.viewmodel.SignUpViewModel
+import com.example.studyapp.viewModel.SignUpViewModel
 
 class signupActivity : ComponentActivity() {
     private val viewModel: SignUpViewModel by viewModels {
@@ -24,7 +24,7 @@ class signupActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StudyAppTheme {
-                SignupScreen(viewModel = viewModel)
+
             }
         }
     }

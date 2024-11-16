@@ -28,8 +28,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.ContentScale
 import com.example.studyapp.Data.UserRepository
 import com.example.studyapp.Data.database.studyAppdatabase
-import com.example.studyapp.viewmodel.LoginViewModel
-import com.example.studyapp.viewmodel.LoginViewModelFactory
+import com.example.studyapp.viewModel.LoginViewModel
+import com.example.studyapp.viewModel.LoginViewModelFactory
 
 class LoginActivity : ComponentActivity() {
     private val viewModel: LoginViewModel by viewModels {
@@ -40,9 +40,7 @@ class LoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StudyAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(modifier = Modifier.padding(innerPadding), viewModel = viewModel)
-                }
+
             }
         }
     }

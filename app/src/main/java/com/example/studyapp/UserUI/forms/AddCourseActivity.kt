@@ -23,14 +23,13 @@ import com.example.studyapp.ui.theme.StudyAppTheme
 import com.example.studyapp.viewModel.CourseViewModel
 
 
-class CourseScreenActivity : ComponentActivity() {
+class AddCourseActivity : ComponentActivity() {
     private val courseViewModel: CourseViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             StudyAppTheme {
-
             }
         }
     }

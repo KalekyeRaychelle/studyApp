@@ -30,7 +30,7 @@ class HomeScreenActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StudyAppTheme {
-                HomeScreen()
+
             }
         }
     }

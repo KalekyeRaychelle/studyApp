@@ -3,7 +3,7 @@ package com.example.studyapp.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.studyapp.Data.UserRepository
-import com.example.studyapp.viewmodel.SignUpViewModel
+import com.example.studyapp.viewModel.SignUpViewModel
 
 class SignUpViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

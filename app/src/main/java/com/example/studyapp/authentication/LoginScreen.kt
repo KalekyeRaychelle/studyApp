@@ -23,11 +23,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.studyapp.Data.UserRepository
 import com.example.studyapp.Data.database.User
 import com.example.studyapp.Data.database.UserDAO
-import com.example.studyapp.viewmodel.LoginViewModel
-import com.example.studyapp.viewmodel.SignUpViewModel
+import com.example.studyapp.viewModel.LoginViewModel
+import com.example.studyapp.viewModel.SignUpViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -86,24 +90,8 @@ fun LoginButton(onClick: () -> Unit) {
         Text("LOGIN", fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
 }
-
 @Composable
-fun SignupRedirect(onClick: () -> Unit) {
-    Text(
-        text = "Don't have an account? Signup",
-        color = Color(0xFF6200EE), // Set your color
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-            .clickable(onClick = onClick),
-        fontSize = 20.sp,
-        textAlign = TextAlign.Center
-    )
-}
-
-
-@Composable
-fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel) {
+fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel, navController: NavHostController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -134,11 +122,9 @@ fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel) {
                     if (username.isNotBlank() && password.isNotBlank()) {
                         viewModel.login(username, password,
                             onLoginSuccess = {
-
                                 Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                             },
                             onFailure = {
-
                                 Toast.makeText(context, "Invalid username or password", Toast.LENGTH_SHORT).show()
                             }
                         )
@@ -146,12 +132,27 @@ fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel) {
                         Toast.makeText(context, "Please enter both username and password", Toast.LENGTH_SHORT).show()
                     }
                 })
-                SignupRedirect(onClick = { /* Redirect to signup screen */ })
+                SignupRedirect(navController = navController) // Pass navController here
             }
         }
     }
 }
 
+@Composable
+fun SignupRedirect(navController: NavHostController) {
+    Text(
+        text = "Don't have an account? Signup",
+        color = Color(0xFF6200EE),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+            .clickable {
+                navController.navigate("signup_screen") // Navigate to signup screen
+            },
+        fontSize = 20.sp,
+        textAlign = TextAlign.Center
+    )
+}
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
@@ -172,10 +173,8 @@ fun LoginScreenPreview() {
         override fun getUser(username: String, password: String): Flow<User> {
             return flowOf(User(username = username, password = password))
         }
-
     }
     val mockUserRepository = UserRepository(mockUserDAO)
-
 
     val mockViewModel = object : LoginViewModel(mockUserRepository) {
         override fun login(username: String, password: String, onLoginSuccess: () -> Unit, onFailure: () -> Unit) {
@@ -185,13 +184,17 @@ fun LoginScreenPreview() {
             } else {
                 onFailure() // Simulate failure for other cases
             }
-
         }
     }
 
-    // You can preview with different values to simulate different login scenarios
-    LoginScreen(
-        modifier = Modifier.fillMaxSize(),
-        viewModel = mockViewModel
-    )
+    // Create a NavController for the preview
+    val navController = rememberNavController()
+
+    // Set up the navigation with the NavHost
+    NavHost(navController = navController, startDestination = "login_screen") {
+        composable("login_screen") {
+            LoginScreen(modifier = Modifier.fillMaxSize(), viewModel = mockViewModel,navController = navController)
+        }
+
+    }
 }

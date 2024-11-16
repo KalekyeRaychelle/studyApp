@@ -33,6 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.studyapp.Data.database.Course
 import com.example.studyapp.R
 import com.example.studyapp.viewModel.CourseViewModel
@@ -86,20 +88,21 @@ fun CourseItem(course: Course) {
 }
 
 @Composable
-fun CourseScreen(courseViewModel: CourseViewModel, modifier: Modifier = Modifier) {
+fun CourseScreen(courseViewModel: CourseViewModel, navController: NavController, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize()) {
         CourseScreenHeading()
         CourseData(courseViewModel = courseViewModel)
+        addButton(navController)
     }
 }
 @Composable
-fun addButton() {
+fun addButton(navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End, // Aligns the button to the far right
+        horizontalArrangement = Arrangement.Absolute.Right, // Aligns the button to the far right
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { /* Add your action here */ }) {
+        IconButton(onClick = { navController.navigate("add_course_screen") }) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add new Course",
@@ -120,11 +123,13 @@ fun CourseScreenPreview() {
     Column(modifier = Modifier.fillMaxSize()) {
         CourseScreenHeading()
         Spacer(modifier = Modifier.height(16.dp))
-        addButton()
+
         Spacer(modifier = Modifier.height(16.dp))
         CourseData(courses = sampleCourses)
-        Spacer(modifier = Modifier.height(350.dp))
-        Footer()
+        Spacer(modifier = Modifier.height(280.dp))
+        val navController = rememberNavController()
+
+        Footer(navController = navController)
     }
 }
 
