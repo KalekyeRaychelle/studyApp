@@ -41,11 +41,11 @@ class footer : ComponentActivity() {
 
 
 @Composable
-fun Footer(navController: NavController) {
+fun Footer(navController: NavController ,  modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF7D956D))
+            .background(Color(0xFF7D959D))
             .padding(16.dp)
     ) {
         Row(

@@ -1,6 +1,6 @@
 package com.example.studyapp.UserUI
 
-import HomeScreen
+import com.example.studyapp.UserUI.HomeScreen
 import com.example.studyapp.authentication.LoginScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity

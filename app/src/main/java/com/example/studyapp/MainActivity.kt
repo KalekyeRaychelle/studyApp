@@ -1,6 +1,6 @@
 package com.example.studyapp
 
-import HomeScreen
+import  com.example.studyapp.UserUI.HomeScreen
 import com.example.studyapp.authentication.LoginScreen
 import com.example.studyapp.authentication.PreviewSignupScreen
 import com.example.studyapp.authentication.SignupScreen
@@ -26,14 +26,25 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.studyapp.Data.UserRepository
+import com.example.studyapp.Data.database.CourseRepository
+import com.example.studyapp.Data.database.TimetableRepository
+import com.example.studyapp.Data.database.User
 import com.example.studyapp.Data.database.UserDAO
 import com.example.studyapp.Data.database.studyAppdatabase
 import com.example.studyapp.UserUI.CourseScreen
+import com.example.studyapp.UserUI.TimetableScreen
 import com.example.studyapp.UserUI.forms.AddCourseScreen
+import com.example.studyapp.UserUI.forms.AddTimetableScreen
 import com.example.studyapp.viewModel.CourseViewModel
+import com.example.studyapp.viewModel.CourseViewModelFactory
 import com.example.studyapp.viewModel.SignUpViewModel
 import com.example.studyapp.viewModel.LoginViewModel
 import com.example.studyapp.viewModel.LoginViewModelFactory
+import com.example.studyapp.viewModel.TimetableViewModel
+import com.example.studyapp.viewModel.TimetableViewModelFactory
+import com.example.studyapp.viewModel.UserViewModel
+import com.example.studyapp.viewModel.UserViewModelFactory
+
 class MainActivity : ComponentActivity() {
 
 
@@ -41,18 +52,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StudyAppTheme {
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
 
-                Surface(modifier = androidx.compose.ui.Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    val navController = rememberNavController()
+                    val userViewModel: UserViewModel = viewModel()
 
-                    val navController = rememberNavController() // Create NavController
+                    // Assuming you are setting the current user after login
+                    val user = User(username = "student1", password = "password")
+                    userViewModel.setUser(user)
 
-                    Navigation(navController = navController)
+                    Navigation(navController = navController, userViewModel = userViewModel)
+
                 }
             }
         }
     }
     @Composable
-    fun Navigation(navController: NavHostController) {
+    fun Navigation(navController: NavHostController, userViewModel: UserViewModel) {
         val viewModel: SignUpViewModel by viewModels {
             SignUpViewModelFactory(UserRepository(studyAppdatabase.getDatabase(this).userDAO()))
         }
@@ -60,22 +76,37 @@ class MainActivity : ComponentActivity() {
         val loginViewModel: LoginViewModel by viewModels {
             LoginViewModelFactory(UserRepository(studyAppdatabase.getDatabase(this).userDAO()))
         }
-        val courseViewModel: CourseViewModel by viewModels()
+
+        val courseViewModel: CourseViewModel by viewModels(){
+            CourseViewModelFactory(CourseRepository(studyAppdatabase.getDatabase(this).courseDAO()))
+        }
+        val timetableViewModel: TimetableViewModel by viewModels {
+            TimetableViewModelFactory(TimetableRepository(studyAppdatabase.getDatabase(this).timetableDAO()), userViewModel)
+        }
+        val userViewModel:UserViewModel by viewModels(){
+            UserViewModelFactory(UserRepository(studyAppdatabase.getDatabase(this).userDAO()))
+        }
         NavHost(navController = navController, startDestination = "login_screen") {
             composable("login_screen") {
-                LoginScreen(modifier = Modifier, viewModel = loginViewModel,navController = navController) // Pass navController to LoginScreen
+                LoginScreen(modifier = Modifier, viewModel = loginViewModel,navController = navController)
             }
             composable("signup_screen") {
-                SignupScreen(viewModel = viewModel,navController = navController) // Pass navController to SignUpScreen
+                SignupScreen(viewModel = viewModel,navController = navController)
             }
             composable("add_course_screen") {
-                AddCourseScreen(navController = navController) // Added AddCourseScreen
+                AddCourseScreen(navController = navController, viewModel = courseViewModel)
             }
             composable("home_screen") {
-                HomeScreen(navController = navController) // Pass navController to HomeScreen
+                HomeScreen(navController = navController)
             }
             composable("course_screen") {
-                CourseScreen(courseViewModel = courseViewModel, navController = navController) // Pass navController to CourseScreen
+                CourseScreen(courseViewModel = courseViewModel, navController = navController)
+            }
+            composable("timetable_screen") {
+                TimetableScreen(timetableViewModel = timetableViewModel, navController = navController)
+            }
+            composable("add_timetablescreen"){
+                AddTimetableScreen( viewModel = timetableViewModel, userViewModel = userViewModel, navController = navController)
             }
         }
     }

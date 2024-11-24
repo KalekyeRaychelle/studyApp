@@ -123,6 +123,7 @@ fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel, navCon
                         viewModel.login(username, password,
                             onLoginSuccess = {
                                 Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                                navController.navigate("home_screen")
                             },
                             onFailure = {
                                 Toast.makeText(context, "Invalid username or password", Toast.LENGTH_SHORT).show()

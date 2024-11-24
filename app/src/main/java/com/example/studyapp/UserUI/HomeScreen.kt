@@ -1,3 +1,4 @@
+package com.example.studyapp.UserUI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +25,7 @@ fun HomeScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .background(color = Color(0xFFEDD9A8))
+            .background(color = Color(0xFF036928)) // Light background color
     ) {
         UserInfoSection()
         Spacer(modifier = Modifier.height(16.dp))
@@ -35,17 +36,14 @@ fun HomeScreen(navController: NavController) {
         CourseHeading()
         Spacer(modifier = Modifier.height(16.dp))
         AvailableCoursesSection()
-
-
-
         Spacer(modifier = Modifier.height(150.dp))
         Footer(navController = navController)
     }
 }
-@Composable
-@Preview
-fun HomeScreenPreview(){
-    val navController = rememberNavController()
 
+@Composable
+@Preview(showBackground = true)
+fun HomeScreenPreview() {
+    val navController = rememberNavController()
     HomeScreen(navController = navController)
 }

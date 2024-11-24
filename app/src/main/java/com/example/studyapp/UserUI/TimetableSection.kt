@@ -4,7 +4,9 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 
@@ -20,26 +22,25 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
-fun THeading(){
-
+fun THeading() {
     Text(
         text = "TIMETABLE",
         fontSize = 25.sp,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-        textAlign = TextAlign.Left,
-        color = Color(0xFF036928)
+        textAlign = TextAlign.Start,
+        color = Color(0xFF036928) // Green color
     )
-
-
 }
 
 @Composable
@@ -49,23 +50,25 @@ fun TimetableSection() {
         targetValue = if (hoverState) -10f else 0f // Moves up on hover
     )
 
-    Box(
+    Card(
         modifier = Modifier
-
-            .graphicsLayer(
-                translationY = animatedOffset // Smooth vertical movement
-            )
-            .border(2.dp, if (hoverState) Color.Green else Color.Gray)
-            .background(color = Color(0xFF7D956D), shape = RoundedCornerShape(16.dp))
-            .padding(30.dp)
-            .size(width = 300.dp, height = 150.dp),
-        contentAlignment = Alignment.Center
+            .height(45.dp)
+            .padding(16.dp)
+            .graphicsLayer(translationY = animatedOffset)
+            .background(color = Color(0xFF7D959D))
+            .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp)
     ) {
-        Text(
-            text = "TIMETABLE",
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
+        Box(
+            modifier = Modifier.height(40.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "TIMETABLE",
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
     }
 }

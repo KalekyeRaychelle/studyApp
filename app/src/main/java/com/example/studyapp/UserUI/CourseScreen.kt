@@ -33,11 +33,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.studyapp.Data.database.Course
+import com.example.studyapp.Data.database.CourseDAO
+import com.example.studyapp.Data.database.CourseRepository
 import com.example.studyapp.R
 import com.example.studyapp.viewModel.CourseViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
 @Composable
 fun CourseScreenHeading() {
     Text(
@@ -89,9 +96,10 @@ fun CourseItem(course: Course) {
 
 @Composable
 fun CourseScreen(courseViewModel: CourseViewModel, navController: NavController, modifier: Modifier = Modifier) {
+    val courses by courseViewModel.allCourses.observeAsState(emptyList())
     Column(modifier = modifier.fillMaxSize()) {
         CourseScreenHeading()
-        CourseData(courseViewModel = courseViewModel)
+        CourseData(courses = courses)
         addButton(navController)
     }
 }
@@ -114,24 +122,52 @@ fun addButton(navController: NavController) {
 
 @Composable
 fun CourseScreenPreview() {
-    val sampleCourses = listOf(
-        Course(courseID = 1, courseName = "Mathematics", noOfTopics = 10, maximumXp = 200),
-        Course(courseID = 2, courseName = "Physics", noOfTopics = 8, maximumXp = 150),
-        Course(courseID = 3, courseName = "Chemistry", noOfTopics = 12, maximumXp = 250)
-    )
+
+    // Create a mock CourseDAO with sample data
+    val mockCourseDAO = object : CourseDAO {
+        override suspend fun insert(course: Course) {
+            // No-op for preview
+        }
+
+        override suspend fun update(course: Course) {
+            // No-op for preview
+        }
+
+        override fun getCourseDetails(courseName: String): Flow<Course?> {
+            return flow { emit(Course(courseID = 1, courseName = courseName, noOfTopics = 10, maximumXp = 200)) }
+        }
+
+        override fun getAllCourses(): LiveData<List<Course>> {
+            return MutableLiveData(
+                listOf(
+                    Course(courseID = 1, courseName = "Mathematics", noOfTopics = 10, maximumXp = 200),
+                    Course(courseID = 2, courseName = "Physics", noOfTopics = 8, maximumXp = 150),
+                    Course(courseID = 3, courseName = "Chemistry", noOfTopics = 12, maximumXp = 250)
+                )
+            )
+        }
+    }
+
+    // Create the mock repository and view model
+    val mockCourseRepository = CourseRepository(mockCourseDAO)
+    val mockViewModel = CourseViewModel(mockCourseRepository)
+
+    // Use the mock data in the CourseViewModel
+    val courses by mockViewModel.allCourses.observeAsState(emptyList())
 
     Column(modifier = Modifier.fillMaxSize()) {
         CourseScreenHeading()
         Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-        CourseData(courses = sampleCourses)
+        CourseData(courses = courses)
+
         Spacer(modifier = Modifier.height(280.dp))
         val navController = rememberNavController()
 
         Footer(navController = navController)
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
